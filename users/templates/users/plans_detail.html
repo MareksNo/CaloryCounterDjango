@@ -1,0 +1,17 @@
+{% extends 'users/base.html' %}
+
+{% block title %}{{ plan.name }}{% endblock %}
+
+{% block body %}
+    <h1>{{ plan.name }}</h1>
+    <h2>Current progress: {{plan.c_current}}/{{plan.c_goal}}</h2>
+    <form action="" method="post"> {% csrf_token %}
+        {% for field in form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
+        <input type="submit" value="Add">
+    </form>
+{% endblock %}

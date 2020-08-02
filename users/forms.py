@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from products import models as product_models
 
 
 class LoginForm(forms.Form):
@@ -17,4 +18,4 @@ class LoginForm(forms.Form):
 
 
 class SelectProductForm(forms.Form):
-    pass
+    product = forms.ModelChoiceField(queryset=product_models.Food.objects.all(), empty_label='Choose')
