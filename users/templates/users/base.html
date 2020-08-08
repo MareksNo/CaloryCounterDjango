@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>{% block title%}Title{% endblock %}</title>
 </head>
+<header>
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">
+            <button type="button">Logout</button>
+        </a>
+    {% endif %}
+</header>
 <body>
     {% if messages %}
         <ul class="messages">
