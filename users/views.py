@@ -45,8 +45,6 @@ class ProfileView(LoginRequiredMixin, View):
 class PlanView(View):
     def get(self, request, pk):
         plan = get_object_or_404(users_models.Plans, pk=pk)
-        print(request.user)
-        print(plan.user)
         if not request.user == plan.user:
             messages.error(message='Please login to access this plan!', request=request)
             return redirect('login')
@@ -62,13 +60,14 @@ class PlanView(View):
         form = forms.SelectProductForm(request.POST)
         if form.is_valid():
             food = form.cleaned_data['product']
+            amount = form.cleaned_data['amount']
             plan = get_object_or_404(users_models.Plans, pk=pk)
 
             statuses = {0: 'Reached', 1: 'Exceeded', -1: 'Not reached'}
 
-            calories_status = plan.calories_status(calories_ct=food.calories)
+            calories_status = plan.calories_status(calories_ct=food.calories, amount=amount)
 
-            messages.success(request=request, message=f'You have added {food.name} to your today\'s plan.')
+            messages.success(request=request, message=f'You have added {amount} x {food.name} to your today\'s plan.')
             messages.info(request=request, message=f'Status of your plan: {statuses[calories_status]}')
 
             context = {
@@ -91,7 +90,7 @@ class CreatePlanView(LoginRequiredMixin, edit.CreateView):
         return super(CreatePlanView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('profile')
+        return reverse('profile-view')
 
 
 class LogoutView(LoginRequiredMixin, View):
@@ -133,7 +132,27 @@ class AutoPlanView(LoginRequiredMixin, edit.FormView):
             return HttpResponseRedirect(reverse('plan-view', kwargs={'pk': plan.id}))
 
 
-class EditProfileView(LoginRequiredMixin, edit.UpdateView):
-    pass
+class EditProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        user_instance = get_object_or_404(klass=User, pk=request.user.id)
+        profile_instance = get_object_or_404(klass=users_models.Profile, user=request.user)
 
+        form_user = forms.UpdateUserForm(instance=user_instance)
+        form_profile = forms.UpdateProfileForm(instance=profile_instance)
 
+        return render(request=request, template_name='users/update_user.html', context={'form_user': form_user,
+                                                                                        'form_profile': form_profile})
+
+    def post(self, request):
+        user_instance = get_object_or_404(klass=User, pk=request.user.id)
+        profile_instance = get_object_or_404(klass=users_models.Profile, user=request.user)
+
+        form_user = forms.UpdateUserForm(request.POST, instance=user_instance)
+        form_profile = forms.UpdateProfileForm(request.POST, instance=profile_instance)
+
+        if form_user.is_valid() and form_profile.is_valid():
+            form_profile.save()
+            form_user.save()
+            messages.success(request, message=f'Updated data for {user_instance.username} successfully')
+
+        return render(request=request, template_name='users/update_user.html',context={'form_user': form_user, 'form_profile': form_profile, })

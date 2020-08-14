@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import authenticate, login
 from products import models as product_models
+from users import models as user_models
+from django.contrib.auth.models import User
 
 
 class LoginForm(forms.Form):
@@ -18,10 +20,22 @@ class LoginForm(forms.Form):
 
 class SelectProductForm(forms.Form):
     product = forms.ModelChoiceField(queryset=product_models.Food.objects.all(), empty_label='Choose')
+    amount = forms.IntegerField(min_value=1, label='Amount')
 
 
 class AutoPlanForm(forms.Form):
     name = forms.CharField(label='Plan Name')
 
+
+class UpdateUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+
+
+class UpdateProfileForm(forms.ModelForm):
+    class Meta:
+        model = user_models.Profile
+        fields = ['weight', 'height', 'age', 'gender', 'activity']
 
 # https://docs.djangoproject.com/en/3.0/ref/models/fields/#choices

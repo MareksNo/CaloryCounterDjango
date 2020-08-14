@@ -18,8 +18,8 @@ class Plans(models.Model):
     def __str__(self):
         return self.name
 
-    def calories_status(self, calories_ct=None):
-        self.c_current += calories_ct
+    def calories_status(self, calories_ct=None, amount=1):
+        self.c_current += calories_ct * amount
 
         if self.c_current > self.c_goal:
             self.goal_reached = True
