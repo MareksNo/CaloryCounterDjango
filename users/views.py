@@ -30,8 +30,11 @@ class RegisterView(View):
         user_form = forms.UserForm
         profile_form = forms.ProfileForm
 
-        return render(request=request, template_name='users/user_form.html', context={'form_user': user_form,
-                                                                                        'form_profile': profile_form})
+        return render(request=request, template_name='users/user_form.html', context={
+            'form_user': user_form,
+            'form_profile': profile_form,
+            'title': 'Create User'
+        })
 
     def post(self, request):
         form_user = forms.UserForm(request.POST)
@@ -49,7 +52,7 @@ class RegisterView(View):
             return HttpResponseRedirect(redirect_to=reverse('profile-view'))
 
         return render(request=request, template_name='users/user_form.html',
-                      context={'form_user': form_user, 'form_profile': form_profile, })
+                      context={'form_user': form_user, 'form_profile': form_profile, 'title': 'Create Profile'})
 
 
 class ProfileView(LoginRequiredMixin, View):
@@ -161,8 +164,11 @@ class EditProfileView(LoginRequiredMixin, View):
         form_user = forms.UserForm(instance=user_instance)
         form_profile = forms.ProfileForm(instance=profile_instance)
 
-        return render(request=request, template_name='users/user_form.html', context={'form_user': form_user,
-                                                                                        'form_profile': form_profile})
+        return render(request=request, template_name='users/user_form.html', context={
+            'form_user': form_user,
+            'form_profile': form_profile,
+            'title': 'Edit Profile'
+        })
 
     def post(self, request):
         user_instance = get_object_or_404(klass=User, pk=request.user.id)
@@ -177,4 +183,4 @@ class EditProfileView(LoginRequiredMixin, View):
             messages.success(request, message=f'Updated data for {user_instance.username} successfully')
 
         return render(request=request, template_name='users/user_form.html',
-                      context={'form_user': form_user, 'form_profile': form_profile, })
+                      context={'form_user': form_user, 'form_profile': form_profile, 'title': 'Edit Profile'})
