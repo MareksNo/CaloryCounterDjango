@@ -27,15 +27,16 @@ class AutoPlanForm(forms.Form):
     name = forms.CharField(label='Plan Name')
 
 
-class UpdateUserForm(forms.ModelForm):
+class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
 
 
-class UpdateProfileForm(forms.ModelForm):
+class ProfileForm(forms.ModelForm):
     class Meta:
         model = user_models.Profile
         fields = ['weight', 'height', 'age', 'gender', 'activity']
+
 
 # https://docs.djangoproject.com/en/3.0/ref/models/fields/#choices

@@ -1,4 +1,17 @@
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save">
-</form>
+{% extends 'users/base.html' %}
+{% block title %}Update User{% endblock %}
+{% block body %}
+        <form action="" method="post"> {% csrf_token %}
+            {% for field in form_user %}
+                <div>
+                    {{ field.label }}: {{ field }}
+                </div>
+            {% endfor %}
+            {% for field in form_profile %}
+                <div>
+                    {{ field.label }}: {{ field }}
+                </div>
+            {% endfor %}
+        <input type="submit" value="Submit">
+        </form>
+{% endblock %}

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render, HttpResponseRedirect, reverse, redirect, get_object_or_404
 from django.views.generic import edit, DetailView, View, UpdateView
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
@@ -23,12 +23,33 @@ class LoginView(edit.FormView):
             return self.render_to_response(self.get_context_data(form=form))
 
 
-class RegisterView(edit.CreateView):
-    model = User
-    fields = ['username', 'email', 'password', 'first_name', 'last_name']
+class RegisterView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('profile-view')
+        user_form = forms.UserForm
+        profile_form = forms.ProfileForm
 
-    def get_success_url(self):
-        return reverse('login')
+        return render(request=request, template_name='users/user_form.html', context={'form_user': user_form,
+                                                                                        'form_profile': profile_form})
+
+    def post(self, request):
+        form_user = forms.UserForm(request.POST)
+        form_profile = forms.ProfileForm(request.POST)
+
+        if form_user.is_valid() and form_profile.is_valid():
+            form_user.save()
+            user = form_user.save()
+            profile = form_profile.save(commit=False)
+            profile.user = user
+            profile.save()
+
+            login(request=request, user=user)
+            messages.success(request, message='Account created successfully')
+            return HttpResponseRedirect(redirect_to=reverse('profile-view'))
+
+        return render(request=request, template_name='users/user_form.html',
+                      context={'form_user': form_user, 'form_profile': form_profile, })
 
 
 class ProfileView(LoginRequiredMixin, View):
@@ -137,22 +158,23 @@ class EditProfileView(LoginRequiredMixin, View):
         user_instance = get_object_or_404(klass=User, pk=request.user.id)
         profile_instance = get_object_or_404(klass=users_models.Profile, user=request.user)
 
-        form_user = forms.UpdateUserForm(instance=user_instance)
-        form_profile = forms.UpdateProfileForm(instance=profile_instance)
+        form_user = forms.UserForm(instance=user_instance)
+        form_profile = forms.ProfileForm(instance=profile_instance)
 
-        return render(request=request, template_name='users/update_user.html', context={'form_user': form_user,
+        return render(request=request, template_name='users/user_form.html', context={'form_user': form_user,
                                                                                         'form_profile': form_profile})
 
     def post(self, request):
         user_instance = get_object_or_404(klass=User, pk=request.user.id)
         profile_instance = get_object_or_404(klass=users_models.Profile, user=request.user)
 
-        form_user = forms.UpdateUserForm(request.POST, instance=user_instance)
-        form_profile = forms.UpdateProfileForm(request.POST, instance=profile_instance)
+        form_user = forms.UserForm(request.POST, instance=user_instance)
+        form_profile = forms.ProfileForm(request.POST, instance=profile_instance)
 
         if form_user.is_valid() and form_profile.is_valid():
             form_profile.save()
             form_user.save()
             messages.success(request, message=f'Updated data for {user_instance.username} successfully')
 
-        return render(request=request, template_name='users/update_user.html',context={'form_user': form_user, 'form_profile': form_profile, })
+        return render(request=request, template_name='users/user_form.html',
+                      context={'form_user': form_user, 'form_profile': form_profile, })
