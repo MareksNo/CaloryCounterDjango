@@ -8,4 +8,9 @@
             <li><a href="{% url 'plan-view' plan.id %}">{{ plan.name }} - {{ plan.date }} - Goal: {{ plan.c_goal }}</a></li>
         {% endfor %}
     </ul>
+    <div>
+        <h4>Options:</h4>
+        <h5><a href="{% url 'create-plan-view' %}">Create New Plan</a></h5>
+        <h5><a href="{% url 'edit-user' %}">Edit Profile</a></h5>
+    </div>
 {% endblock %}

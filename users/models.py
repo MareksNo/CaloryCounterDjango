@@ -4,6 +4,9 @@ from django.db import models
 from django.dispatch import receiver
 from django.utils import timezone
 from django.db.models.signals import post_save
+from django.http import HttpRequest
+
+from django.urls import reverse, reverse_lazy
 
 
 class Plans(models.Model):
@@ -33,12 +36,15 @@ class Plans(models.Model):
         self.save()
         return -1  # Not reached
 
+
     @classmethod
     def create_plan(cls, name, c_goal, user):
         plan = cls.objects.create(name=name, c_goal=c_goal, user=user)
         plan.save()
 
         return plan
+
+
 
 class Profile(models.Model):
     MALE = 'm'
@@ -70,6 +76,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user}\'s profile'
-
-# Create a RunPython thingy, to create all
-# of the profile, then delete the receiver, split the form in 2 parts when creating a user

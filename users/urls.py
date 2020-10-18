@@ -1,11 +1,14 @@
 from django.urls import path
 
+from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_control
+
 from users import views
 
 
 urlpatterns = [
     path('login/', views.LoginView.as_view(), name='login'),
-    path('profile/', views.ProfileView.as_view(), name='profile-view'),
+    path('profile/', views.ProfileView.as_view(), name='profile-view', ),
     path('plan/<int:pk>/', views.PlanView.as_view(), name='plan-view'),
     path('create-plan/', views.CreatePlanView.as_view(), name='create-plan-view'),
     path('logout/', views.LogoutView.as_view(), name='logout'),

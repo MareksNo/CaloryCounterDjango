@@ -1,4 +1,9 @@
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save">
-</form>
+{% extends 'users/base.html' %}
+{% block title %}Manual Setup{% endblock %}
+{% block body%}
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save">
+    </form>
+    <h5><a href="{% url 'auto-plan' %}" title="This Will make the best plan using details provided in your profile">Automatic Setup</a></h5>
+{% endblock %}

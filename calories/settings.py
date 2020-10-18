@@ -25,7 +25,7 @@ SECRET_KEY = 'ex9nbgliu_gac!q-em%8h^s(4uj1@)!20+#_ya^%)8_n0)4n43'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -126,3 +126,10 @@ STATIC_URL = '/static/'
 INTERNAL_IPS = [
     '10.0.2.2',
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}

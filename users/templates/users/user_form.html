@@ -1,5 +1,5 @@
 {% extends 'users/base.html' %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ action }}{% endblock %}
 {% block body %}
         <form action="" method="post"> {% csrf_token %}
             {% for field in form_user %}
@@ -12,6 +12,7 @@
                     {{ field.label }}: {{ field }}
                 </div>
             {% endfor %}
-        <input type="submit" value="Submit">
+        <input type="submit" value="{{ action }}">
         </form>
+        {% block extra %}{% endblock %}
 {% endblock %}

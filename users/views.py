@@ -1,13 +1,19 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.shortcuts import render, HttpResponseRedirect, reverse, redirect, get_object_or_404
-from django.views.generic import edit, DetailView, View, UpdateView
+from django.views.generic import edit, View
 from django.contrib.auth import logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.views.decorators.vary import vary_on_headers
+from django.core.cache import cache
 
 from users import forms
 from users import models as users_models
+
+User = get_user_model()
 
 
 class LoginView(edit.FormView):
@@ -30,10 +36,10 @@ class RegisterView(View):
         user_form = forms.UserForm
         profile_form = forms.ProfileForm
 
-        return render(request=request, template_name='users/user_form.html', context={
+        return render(request=request, template_name='users/register.html', context={
             'form_user': user_form,
             'form_profile': profile_form,
-            'title': 'Create User'
+            'action': 'Create User'
         })
 
     def post(self, request):
@@ -52,17 +58,18 @@ class RegisterView(View):
             return HttpResponseRedirect(redirect_to=reverse('profile-view'))
 
         return render(request=request, template_name='users/user_form.html',
-                      context={'form_user': form_user, 'form_profile': form_profile, 'title': 'Create Profile'})
+                      context={'form_user': form_user, 'form_profile': form_profile, 'action': 'Create Profile'})
 
 
 class ProfileView(LoginRequiredMixin, View):
     raise_exception = True
 
     def get(self, request):
-
         user = request.user
-        plans = users_models.Plans.objects.filter(user=user)
-
+        plans = cache.get(f'plans{user}')
+        if not plans:
+            plans = users_models.Plans.objects.filter(user=user)
+            cache.set(f'plans{user}', plans, 600)
         return render(template_name='users/profile.html', request=request, context={'user': user, 'plans': plans})
 
 
@@ -109,6 +116,7 @@ class CreatePlanView(LoginRequiredMixin, edit.CreateView):
     fields = ['name', 'c_goal']
     
     def form_valid(self, form):
+        cache.delete(f'plans{self.request.user}')
         user = self.request.user
         form.instance.user = user
         return super(CreatePlanView, self).form_valid(form)
@@ -134,6 +142,8 @@ class AutoPlanView(LoginRequiredMixin, edit.FormView):
     success_url = reverse_lazy('profile-view')
 
     def form_valid(self, form):
+        cache.delete(f'plans{self.request.user}')
+
         gender_multipliers = {'f': {'age': 4.7, 'height': 4.7, 'weight': 4.35, 'bonus': 665},
                               'm': {'age': 6.8, 'height': 12.7, 'weight': 6.23, 'bonus': 66}}
         activity_multipliers = {'BMR': 1, 'Sedentary': 1.2, 'Light': 1.375, 'Moderate': 1.55, 'Very Active': 1.725}
@@ -167,7 +177,7 @@ class EditProfileView(LoginRequiredMixin, View):
         return render(request=request, template_name='users/user_form.html', context={
             'form_user': form_user,
             'form_profile': form_profile,
-            'title': 'Edit Profile'
+            'action': 'Edit Profile'
         })
 
     def post(self, request):
@@ -183,4 +193,4 @@ class EditProfileView(LoginRequiredMixin, View):
             messages.success(request, message=f'Updated data for {user_instance.username} successfully')
 
         return render(request=request, template_name='users/user_form.html',
-                      context={'form_user': form_user, 'form_profile': form_profile, 'title': 'Edit Profile'})
+                      context={'form_user': form_user, 'form_profile': form_profile, 'action': 'Edit Profile'})
