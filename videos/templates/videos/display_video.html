@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Montserrat:400,700|Syne+Tactile:400,700" rel="stylesheet">
+    <link rel='stylesheet' href="{% static 'css/style.css' %}">
+    <title>{{ video.title }}</title>
+</head>
+<body>
+    <h1 id="project-name">BananaCal</h1>
+    <video id="video" controls>
+        <source src="{{MEDIA_URL}}{{video.file}}" type="video/mp4">
+    </video>
+    <div class="video-info-cl">
+        <h1 id="video-title">{{ video.title }}</h1>
+        <h3>Uploaded by: {{ video.user.username }}</h3>
+        <h4>Description:</h4>
+        <p>{{ video.description }}</p>
+    </div>
+    {% include 'nav_bar.html' %}
+</body>
+</html>

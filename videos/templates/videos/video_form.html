@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Upload Video{% endblock %}
+{% block body %}
+    <form action="" method="post"  enctype="multipart/form-data">{% csrf_token %}
+         {% for field in form %}
+            <div>
+                <p style="text-transform: capitalize">{{ field.name }}:</p>
+                {{ field }}
+                <ul>
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+             </div>
+         {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

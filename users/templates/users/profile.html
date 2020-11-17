@@ -1,4 +1,6 @@
-{% extends 'users/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
 {% block title %}{{ user.username }}{% endblock %}
 {% block body %}
     <h1>Hi, {{ user.username }}</h1>
@@ -10,7 +12,15 @@
     </ul>
     <div>
         <h4>Options:</h4>
-        <h5><a href="{% url 'create-plan-view' %}">Create New Plan</a></h5>
-        <h5><a href="{% url 'edit-user' %}">Edit Profile</a></h5>
+        <h5><a class="action-button" href="{% url 'create-plan-view' %}">Create New Plan</a></h5>
+
+        <form action="{% url 'edit-user' %}">
+            <input class="action-button" type="submit" value="Edit Profile"/>
+        </form>
     </div>
+    <ul>
+        {% for video in videos %}
+        <li><a href="{% url 'display-video' video.id %}">{{ video.title }}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}

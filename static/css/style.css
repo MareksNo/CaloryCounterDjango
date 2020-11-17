@@ -1,0 +1,102 @@
+html {
+    background-color: rgb(145, 200, 110)
+
+}
+
+body {
+
+    background-color: rgba(200, 217, 121, 1);
+    min-height: 85vh;
+    border: 0;
+    padding-bottom: 2%;
+    padding-top: 20px;
+    margin: 0;
+
+
+    /*
+    border-top: 76px solid rgb(145, 200, 110);
+    margin-left: 160px;
+    padding: 0px 10px;
+    */
+
+    font-family: "Roboto", sans-serif;
+
+
+}
+
+.video-info-cl {
+    margin-left: 3%;
+    margin-right: auto;
+    color: rgb(59, 49, 22);
+}
+
+.action-button {
+    sfs
+}
+
+/*
+.sidenav {
+  height: 100%;
+  width: 160px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+*/
+
+/* The navigation menu links */
+/*
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+    color: purple;
+}
+*/
+
+#video-title {
+
+    font-family: "Montserrat", sans-serif;
+}
+
+#video {
+    height: 65%;
+    width: 70%;
+
+
+    box-shadow: inset 0px 0px 36px 36px rgba(0,0,0,0.2);
+    max-height: 60vh;
+    margin-top: 5%;
+    margin-left: 3%;
+    margin-right: auto;
+    display: block
+
+}
+
+#project-name {
+
+    font-size: 35px;
+    margin: 0;
+    bottom-margin: 200px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    right 0;
+    left: 0;
+    bottom: 0;
+    padding-top: 1%;
+    width: 100%;
+    background-color: rgb(145, 200, 110);
+
+    font-family: "Syne Tactile", sans-serif;
+
+}

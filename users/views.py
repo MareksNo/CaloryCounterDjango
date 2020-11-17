@@ -5,13 +5,11 @@ from django.views.generic import edit, View
 from django.contrib.auth import logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.decorators.cache import cache_page
-from django.utils.decorators import method_decorator
-from django.views.decorators.vary import vary_on_headers
 from django.core.cache import cache
 
 from users import forms
 from users import models as users_models
+from videos import models as video_models
 
 User = get_user_model()
 
@@ -70,7 +68,13 @@ class ProfileView(LoginRequiredMixin, View):
         if not plans:
             plans = users_models.Plans.objects.filter(user=user)
             cache.set(f'plans{user}', plans, 600)
-        return render(template_name='users/profile.html', request=request, context={'user': user, 'plans': plans})
+        videos = video_models.Video.objects.filter(user=user)
+        return render(template_name='users/profile.html',
+                      request=request,
+                      context={'user': user,
+                               'plans': plans,
+                               'videos': videos
+                               })
 
 
 class PlanView(View):

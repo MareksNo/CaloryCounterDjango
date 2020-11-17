@@ -45,7 +45,6 @@ class Plans(models.Model):
         return plan
 
 
-
 class Profile(models.Model):
     MALE = 'm'
     FEMALE = 'f'

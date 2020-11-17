@@ -4,14 +4,20 @@ from django.core.cache import cache
 
 from users import models
 
+
 class ProfileAdmin(admin.ModelAdmin):
 
     list_select_related = True
+
 
 class PlanAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         cache.delete(f'plans{request.user}')
         return super().save_model(request, obj, form, change)
+
+    def delete_model(self, request, obj):
+        cache.delete(f'plans{request.user}')
+        return super().delete_model(request, obj)
 
 
 admin.site.register(models.Plans, PlanAdmin)
