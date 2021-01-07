@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from django.views.decorators.cache import cache_page
 from django.views.decorators.cache import cache_control
@@ -14,5 +14,9 @@ urlpatterns = [
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('auto_setup/', views.AutoPlanView.as_view(), name='auto-plan'),
     path('edit_user/', views.EditProfileView.as_view(), name='edit-user'),
-    path('register/', views.RegisterView.as_view(), name='register')
+    path('register/', views.RegisterView.as_view(), name='register'),
+
+
+    # REST Framework URLS
+    path('api/plan/', include('users.api.urls', 'plans_api'))
 ]

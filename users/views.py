@@ -19,6 +19,12 @@ class LoginView(edit.FormView):
     form_class = forms.LoginForm
     success_url = reverse_lazy('profile-view')
 
+    def get_success_url(self):
+        next_url = self.request.GET.get('next')
+        if next_url:
+            return next_url
+        return self.success_url  # return some other url if next parameter not present
+
     def form_valid(self, form):
         login_status = form.login_user(request=self.request)
         if login_status:
@@ -60,7 +66,7 @@ class RegisterView(View):
 
 
 class ProfileView(LoginRequiredMixin, View):
-    raise_exception = True
+    login_url = reverse_lazy('login')
 
     def get(self, request):
         user = request.user
